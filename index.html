@@ -1,1 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RunComp Admin Fixed</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<style>
+  body { font-family: Arial; background: #f4f4f4; margin:0; }
+  header { background: #111; color: #fff; padding: 25px; text-align: center; }
+  section { background: #fff; margin: 15px; padding: 20px; border-radius: 10px; }
+  .competition { border:1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+  button { background: #111; color: #fff; border: none; padding:10px 15px; border-radius:5px; margin-top:5px; }
+  button:disabled { background: #888; }
+  #adminPanel { display:block; border-top:2px solid #111; margin-top:20px; padding-top:15px; }
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>💷 RunComp 💷</h1>
+  <p>Competitions made simple</p>
+</header>
+
+<section>
+  <h2>Live Competitions</h2>
+  <div id="competitionList"></div>
+</section>
+
+<section>
+  <!-- Admin panel always visible for now -->
+  <div id="adminPanel">
+    <h2>Admin Panel</h2>
+    <button onclick="addCompetition()">Add Competition</button>
+    <button onclick="pickWinner()">Pick Winner</button>
+  </div>
+</section>
+
+<script>
+  const competitions = [
+    { name: "£500 Cash Draw", price: 5, max: 100, entries: [] },
+    { name: "£300 Cash Draw", price: 3, max: 150, entries: [] },
+    { name: "City Break for 2", price: 10, max: 50, entries: [] }
+  ];
+
+  const list = document.getElementById("competitionList");
+
+  function render() {
+    list.innerHTML = "";
+    competitions.forEach((c, i) => {
+      const buttonDisabled = c.entries.length >= c.max;
+      list.innerHTML += `
+        <div class="competition">
+          <h3>${c.name}</h3>
+          <p>£${c.price} per entry</p>
+          <p>Entries: ${c.entries.length} / ${c.max}</p>
+          <button onclick="enter(${i})" ${buttonDisabled ? "disabled" : ""}>
+            ${buttonDisabled ? "Closed" : "Enter"}
+          </button>
+        </div>
+      `;
+    });
+  }
+
+  function enter(index) {
+    const name = prompt("Your name:");
+    if (!name) return;
+    competitions[index].entries.push(name);
+    render();
+    alert("Entry successful!");
+  }
+
+  function addCompetition() {
+    const name = prompt("Competition name:");
+    const price = prompt("Entry price (£):");
+    const max = prompt("Max entries:");
+
+    if (!name || !price || !max) return;
+
+    competitions.push({
+      name,
+      price: Number(price),
+      max: Number(max),
+      entries: []
+    });
+    render();
+  }
+
+  function pickWinner() {
+    if (competitions.length === 0) return;
+    const comp = competitions[0];
+    if (comp.entries.length === 0) {
+      alert("No entries yet");
+      return;
+    }
+    const winner = comp.entries[Math.floor(Math.random() * comp.entries.length)];
+    alert("Winner: " + winner);
+  }
+
+  render();
+</script>
+
+</body>
+</html>
