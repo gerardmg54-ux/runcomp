@@ -1,40 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>RunComp</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <title>RunComp</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background: #f4f4f4;
-  margin: 0;
-}
-header {
-  background: #111;
-  color: white;
-  padding: 20px;
-  text-align: center;
-}
-section {
-  background: white;
-  margin: 15px;
-  padding: 15px;
-  border-radius: 10px;
-}
-button {
-  background: #111;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 5px;
-  font-size: 16px;
-}
-li {
-  margin: 8px 0;
-}
-</style>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #111;
+      color: white;
+      padding: 25px;
+      text-align: center;
+    }
+
+    section {
+      background: white;
+      margin: 15px;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    .competition {
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    button {
+      background: #111;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    button:disabled {
+      background: #888;
+    }
+  </style>
 </head>
 
 <body>
@@ -46,45 +58,66 @@ li {
 
 <section>
   <h2>Upcoming Competitions</h2>
-  <ul id="competitionList"></ul>
-  <button onclick="joinCompetition()">Join Competition</button>
-</section>
-
-<section>
-  <h2>Create a Competition</h2>
-  <button onclick="createCompetition()">Host Competition</button>
+  <div id="competitionList"></div>
 </section>
 
 <script>
-let competitions = [
-  "£5 Entry – Win £50",
-  "Free Entry – Winner Takes All",
-  "£10 Entry – Big Cash Prize"
-];
+  const competitions = [
+    {
+      name: "£500 Cash Draw",
+      price: 5,
+      maxEntries: 100,
+      entries: 0
+    },
+    {
+      name: "£300 Cash Draw",
+      price: 3,
+      maxEntries: 150,
+      entries: 0
+    },
+    {
+      name: "City Break for 2",
+      price: 10,
+      maxEntries: 50,
+      entries: 0
+    }
+  ];
 
-function loadCompetitions() {
   const list = document.getElementById("competitionList");
-  list.innerHTML = "";
-  competitions.forEach(c => {
-    const li = document.createElement("li");
-    li.textContent = c;
-    list.appendChild(li);
-  });
-}
 
-function joinCompetition() {
-  alert("Joining competition (payment system comes later)");
-}
+  function renderCompetitions() {
+    list.innerHTML = "";
 
-function createCompetition() {
-  const name = prompt("Enter competition name:");
-  if (name) {
-    competitions.push(name);
-    loadCompetitions();
+    competitions.forEach((comp, index) => {
+      const div = document.createElement("div");
+      div.className = "competition";
+
+      const buttonDisabled = comp.entries >= comp.maxEntries;
+
+      div.innerHTML = `
+        <h3>${comp.name}</h3>
+        <p>Price per entry: £${comp.price}</p>
+        <p>Entries: ${comp.entries} / ${comp.maxEntries}</p>
+        <button onclick="enterCompetition(${index})" ${buttonDisabled ? "disabled" : ""}>
+          ${buttonDisabled ? "Closed" : "Enter Competition"}
+        </button>
+      `;
+
+      list.appendChild(div);
+    });
   }
-}
 
-loadCompetitions();
+  function enterCompetition(index) {
+    const comp = competitions[index];
+
+    if (comp.entries < comp.maxEntries) {
+      comp.entries++;
+      alert("Entry successful!");
+      renderCompetitions();
+    }
+  }
+
+  renderCompetitions();
 </script>
 
 </body>
