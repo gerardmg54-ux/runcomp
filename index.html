@@ -1,1 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RunComp</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  margin: 0;
+}
+header {
+  background: #111;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+section {
+  background: white;
+  margin: 15px;
+  padding: 15px;
+  border-radius: 10px;
+}
+button {
+  background: #111;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-size: 16px;
+}
+li {
+  margin: 8px 0;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>💷 RunComp 💷</h1>
+  <p>Competitions made simple</p>
+</header>
+
+<section>
+  <h2>Upcoming Competitions</h2>
+  <ul id="competitionList"></ul>
+  <button onclick="joinCompetition()">Join Competition</button>
+</section>
+
+<section>
+  <h2>Create a Competition</h2>
+  <button onclick="createCompetition()">Host Competition</button>
+</section>
+
+<script>
+let competitions = [
+  "£5 Entry – Win £50",
+  "Free Entry – Winner Takes All",
+  "£10 Entry – Big Cash Prize"
+];
+
+function loadCompetitions() {
+  const list = document.getElementById("competitionList");
+  list.innerHTML = "";
+  competitions.forEach(c => {
+    const li = document.createElement("li");
+    li.textContent = c;
+    list.appendChild(li);
+  });
+}
+
+function joinCompetition() {
+  alert("Joining competition (payment system comes later)");
+}
+
+function createCompetition() {
+  const name = prompt("Enter competition name:");
+  if (name) {
+    competitions.push(name);
+    loadCompetitions();
+  }
+}
+
+loadCompetitions();
+</script>
+
+</body>
+</html>
