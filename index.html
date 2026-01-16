@@ -2,262 +2,184 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>RunComp – Ultimate Vogue Animated</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RunComp Ultimate</title>
+
 <style>
-body { font-family: 'Helvetica', Arial, sans-serif; background: #f5f5f5; margin:0; overflow-x:hidden;}
-header { background: #222; color: #fff; padding: 30px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.3);}
-header h1 { margin:0; font-size: 2em; }
-header p { margin:5px 0 0; font-size:1.1em; color:#ccc; }
-
-section { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
-
-.competition { background:#fff; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); display:flex; flex-wrap:wrap; margin-bottom:20px; overflow:hidden; transform: translateY(20px); opacity:0; animation:fadeInUp 0.5s forwards;}
-@keyframes fadeInUp { to {opacity:1; transform: translateY(0);} }
-
-.competition:hover { transform: translateY(-5px); transition: transform 0.3s; }
-.comp-image { width:150px; height:150px; flex-shrink:0; object-fit:cover; border-radius:8px; }
-.comp-details { flex:1; padding:15px; display:flex; flex-direction:column; justify-content:space-between; }
-.comp-details h3 { margin:0 0 5px; font-size:1.3em; }
-.comp-details p { margin:5px 0; }
-.progress { background:#eee; border-radius:8px; height:18px; margin:5px 0; overflow:hidden; }
-.progress-bar { background: linear-gradient(90deg,#ff5e62,#ff9966); height:18px; width:0%; transition: width 0.5s; }
-
-.countdown-container { display:flex; gap:5px; margin-top:5px; flex-wrap:wrap; }
-.countdown-block { background:#ff5e62; color:#fff; padding:8px 12px; border-radius:6px; font-weight:bold; font-size:1.2em; min-width:50px; text-align:center; perspective:200px; }
-
-.countdown-flip { display:inline-block; transform-style:preserve-3d; transition: transform 0.6s; }
-.countdown-flip.flip { transform: rotateX(-180deg); }
-
-button { background:#ff5e62; color:#fff; border:none; padding:10px 18px; border-radius:8px; font-size:1em; cursor:pointer; margin-top:10px; transition: all 0.3s;}
-button:hover { background:#ff9966; transform:scale(1.05);}
-button:disabled { background:#aaa; cursor:not-allowed; }
-
-#adminPanel { display:none; border-top:2px solid #222; margin-top:20px; padding-top:15px; }
-#winners { margin-top:30px; padding:15px; background:#fff; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
-#winners .winner-card { display:flex; align-items:center; margin-bottom:10px; padding:10px; background:#fdf0f0; border-radius:8px; }
-#winners img { width:80px; height:80px; border-radius:8px; margin-right:15px; object-fit:cover; }
-
-.quantity { width:60px; padding:5px; border-radius:6px; border:1px solid #ccc; }
-
-#usernamePrompt { display:flex; justify-content:center; margin:20px; }
-#usernamePrompt input { padding:10px; border-radius:6px; border:1px solid #ccc; font-size:1em; margin-right:10px; }
-#usernamePrompt button { padding:10px 15px; border-radius:6px; border:none; background:#ff5e62; color:#fff; cursor:pointer; }
-
-#winnerPopup { position:fixed; top:20px; right:-400px; background:#ff5e62; color:#fff; padding:20px; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.3); font-size:1.1em; transition: right 0.5s; z-index:999; }
-#winnerPopup.show { right:20px; }
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  margin: 0;
+}
+header {
+  background: #111;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+.container {
+  padding: 20px;
+}
+input, button {
+  padding: 10px;
+  margin: 5px 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+button {
+  background: #ff5f5f;
+  border: none;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+button.secondary {
+  background: #555;
+}
+.card {
+  background: white;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+}
+.card img {
+  width: 100%;
+  border-radius: 10px;
+}
+.admin {
+  display: none;
+}
+.actions button {
+  margin-top: 5px;
+}
+.winner {
+  color: green;
+  font-weight: bold;
+}
 </style>
 </head>
+
 <body>
 
 <header>
-<h1>💷 RunComp Ultimate</h1>
-<p>Competitions with animated flip countdowns!</p>
+  <h1>💷 RunComp Ultimate</h1>
+  <p>Competitions with live draws</p>
 </header>
 
-<section id="userSection">
-<div id="usernamePrompt">
-  <input type="text" id="username" placeholder="Enter your name" />
-  <button onclick="setUserName()">Confirm Name</button>
-</div>
-<p id="welcomeMsg"></p>
-</section>
+<div class="container">
 
-<section>
+<h3>Your Name</h3>
+<input id="username" placeholder="Enter your name">
+<button onclick="saveName()">Confirm Name</button>
+
+<hr>
+
 <h2>Live Competitions</h2>
 <div id="competitionList"></div>
-</section>
 
-<section>
 <button onclick="adminLogin()">Admin Login</button>
-<div id="adminPanel">
+
+<div class="admin" id="adminPanel">
+<hr>
 <h2>Admin Panel</h2>
+
+<input id="compName" placeholder="Competition name">
+<input id="compPrice" placeholder="Ticket price (£)">
+<input id="compImage" placeholder="Image URL">
+<input id="compDate" type="datetime-local">
+
 <button onclick="addCompetition()">Add Competition</button>
-<button onclick="pickWinnerForCompetition()">Pick Winner</button>
-<button onclick="showWinners()">Show Winners</button>
 </div>
-</section>
 
-<section id="winners">
+<hr>
+
 <h2>Winners</h2>
-<div id="winnersList">No winners yet.</div>
-</section>
+<div id="winnerList"></div>
 
-<div id="winnerPopup"></div>
+</div>
 
 <script>
-// CONFIG
-const ADMIN_PIN = "1234";
-let currentUser = "";
-const competitions = [
-  { name: "£500 Cash Draw", price: 5, max: 100, entries: [], description:"Win £500 cash instantly!", endTime: new Date(new Date().getTime()+86400000), paypal: "https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=YOUR_PAYPAL_EMAIL", image:"https://via.placeholder.com/150" },
-  { name: "City Break for 2", price: 10, max: 50, entries: [], description:"Romantic weekend getaway!", endTime: new Date(new Date().getTime()+172800000), paypal: "https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=YOUR_PAYPAL_EMAIL", image:"https://via.placeholder.com/150" }
-];
+let competitions = JSON.parse(localStorage.getItem("competitions")) || [];
+let winners = JSON.parse(localStorage.getItem("winners")) || [];
 
-const winners = [];
-const list = document.getElementById("competitionList");
-const winnersList = document.getElementById("winnersList");
-const welcomeMsg = document.getElementById("welcomeMsg");
-const winnerPopup = document.getElementById("winnerPopup");
-
-// USER NAME
-function setUserName() {
-  const nameInput = document.getElementById("username");
-  const name = nameInput.value.trim();
-  if(!name){ alert("Please enter your name."); return; }
-  currentUser = name;
-  document.getElementById("usernamePrompt").style.display="none";
-  welcomeMsg.innerText = `Welcome, ${currentUser}! Your entries will be saved under this name.`;
+function saveName() {
+  const name = document.getElementById("username").value;
+  localStorage.setItem("username", name);
+  alert("Name saved");
 }
 
-// RENDER COMPETITIONS
-function render() {
-  if(!currentUser) return;
-  list.innerHTML = "";
-  const now = new Date();
-  competitions.forEach((c,i) => {
-    const timeLeft = Math.max(0,c.endTime-now);
-    const hours = Math.floor(timeLeft/3600000);
-    const minutes = Math.floor((timeLeft%3600000)/60000);
-    const seconds = Math.floor((timeLeft%60000)/1000);
-    const closed = c.entries.length >= c.max || timeLeft<=0;
-    const percent = Math.min((c.entries.length/c.max)*100,100);
+function adminLogin() {
+  const pass = prompt("Enter admin password:");
+  if (pass === "admin123") {
+    document.getElementById("adminPanel").style.display = "block";
+  } else {
+    alert("Wrong password");
+  }
+}
 
-    list.innerHTML += `
-      <div class="competition">
-        <img class="comp-image" src="${c.image}" alt="${c.name}">
-        <div class="comp-details">
-          <h3>${c.name}</h3>
-          <p>${c.description}</p>
-          <p>£${c.price} per entry</p>
-          <p>Entries: ${c.entries.length} / ${c.max}</p>
-          <div class="progress"><div class="progress-bar" style="width:${percent}%;"></div></div>
-          <div class="countdown-container">
-            <div class="countdown-block"><span class="countdown-flip" id="h${i}">${hours}h</span></div>
-            <div class="countdown-block"><span class="countdown-flip" id="m${i}">${minutes}m</span></div>
-            <div class="countdown-block"><span class="countdown-flip" id="s${i}">${seconds}s</span></div>
-          </div>
-          <label>Quantity: <input type="number" value="1" min="1" class="quantity" id="qty${i}" ${closed ? "disabled" : ""}></label>
-          <button onclick="payAndEnter(${i})" ${closed ? "disabled" : ""}>${closed ? "Closed" : "Pay & Enter"}</button>
+function addCompetition() {
+  competitions.push({
+    name: compName.value,
+    price: compPrice.value,
+    image: compImage.value,
+    date: compDate.value
+  });
+  save();
+}
+
+function editCompetition(i) {
+  const c = competitions[i];
+  const name = prompt("Edit name", c.name);
+  const price = prompt("Edit price", c.price);
+  const image = prompt("Edit image URL", c.image);
+  const date = prompt("Edit draw date", c.date);
+
+  competitions[i] = { name, price, image, date };
+  save();
+}
+
+function deleteCompetition(i) {
+  if (confirm("Delete this competition?")) {
+    competitions.splice(i, 1);
+    save();
+  }
+}
+
+function pickWinner(i) {
+  const user = localStorage.getItem("username") || "Anonymous";
+  winners.push(`${competitions[i].name} - Winner: ${user}`);
+  save();
+}
+
+function save() {
+  localStorage.setItem("competitions", JSON.stringify(competitions));
+  localStorage.setItem("winners", JSON.stringify(winners));
+  render();
+}
+
+function render() {
+  competitionList.innerHTML = "";
+  competitions.forEach((c, i) => {
+    competitionList.innerHTML += `
+      <div class="card">
+        <img src="${c.image}">
+        <h3>${c.name}</h3>
+        <p>Ticket: £${c.price}</p>
+        <p>Draw: ${c.date}</p>
+        <div class="actions">
+          <button onclick="pickWinner(${i})">Pick Winner</button>
+          <button class="secondary" onclick="editCompetition(${i})">Edit</button>
+          <button class="secondary" onclick="deleteCompetition(${i})">Delete</button>
         </div>
       </div>
     `;
   });
+
+  winnerList.innerHTML = winners.map(w => `<p class="winner">${w}</p>`).join("");
 }
 
-// FLIP ANIMATION UPDATE
-function flipUpdate(el, val) {
-  el.classList.remove("flip");
-  void el.offsetWidth; // trigger reflow
-  el.innerText = val;
-  el.classList.add("flip");
-}
-
-// PAYPAL AUTOMATED
-function payAndEnter(index) {
-  if(!currentUser){ alert("Enter your name first."); return; }
-  const comp = competitions[index];
-  const qtyEl = document.getElementById("qty"+index);
-  let qty = Number(qtyEl.value);
-  if(isNaN(qty) || qty<1) qty=1;
-  if(comp.entries.length+qty>comp.max){ alert("Not enough entries left."); return; }
-
-  const answer = prompt(`Answer this question to enter: ${comp.question || "No question"} `);
-  if(!answer) { alert("Entry cancelled."); return; }
-
-  const total = comp.price * qty;
-  const paypalURL = `${comp.paypal}&item_name=${encodeURIComponent(comp.name)}&amount=${total}`;
-  window.open(paypalURL,"_blank");
-
-  for(let i=0;i<qty;i++){
-    comp.entries.push({name:currentUser,time:new Date()});
-  }
-  render();
-  alert(`Entry confirmed! ${qty} ticket(s) added for ${currentUser}.`);
-}
-
-// ADMIN PANEL
-function adminLogin() {
-  const pin = prompt("Enter admin PIN:");
-  if(pin===ADMIN_PIN){ document.getElementById("adminPanel").style.display="block"; alert("Admin access granted"); }
-  else alert("Wrong PIN!");
-}
-
-// ADD COMPETITION
-function addCompetition() {
-  const name = prompt("Competition name:");
-  const price = prompt("Entry price (£):");
-  const max = prompt("Max entries:");
-  const question = prompt("Question before entry (optional):");
-  const desc = prompt("Description of prize:");
-  const days = prompt("Duration in days:");
-  const paypal = prompt("PayPal business email:");
-  const image = prompt("Image URL:") || "https://via.placeholder.com/150";
-  if(!name||!price||!max||!days||!paypal) return;
-
-  competitions.push({
-    name, price:Number(price), max:Number(max), entries:[], question, description: desc || "", 
-    endTime: new Date(new Date().getTime()+Number(days)*24*60*60*1000),
-    paypal: "https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business="+encodeURIComponent(paypal),
-    image
-  });
-  render();
-}
-
-// PICK WINNER
-function pickWinnerForCompetition() {
-  if(competitions.length===0) return alert("No competitions.");
-  let compList="Choose competition by number:\n";
-  competitions.forEach((c,i)=>{ compList+=`${i}: ${c.name}\n`; });
-  const idx = Number(prompt(compList));
-  if(isNaN(idx)||idx<0||idx>=competitions.length) return alert("Invalid choice.");
-
-  const comp = competitions[idx];
-  if(comp.entries.length===0) return alert("No entries yet.");
-  const winnerIdx = Math.floor(Math.random()*comp.entries.length);
-  const winner = comp.entries[winnerIdx].name;
-  winners.push({competition: comp.name, winner, image: comp.image});
-  showWinnerPopup(winner, comp.name, comp.image);
-  render();
-}
-
-// SHOW WINNERS
-function showWinners() {
-  if(winners.length===0){ winnersList.innerHTML="No winners yet."; return; }
-  winnersList.innerHTML="";
-  winners.forEach(w=>{ 
-    winnersList.innerHTML+=`<div class="winner-card"><img src="${w.image}" alt="${w.competition}"><div>${w.competition}: <strong>${w.winner}</strong></div></div>`;
-  });
-}
-
-// WINNER POPUP
-function showWinnerPopup(name, compName, image) {
-  winnerPopup.innerHTML = `<img src="${image}" alt="${compName}" style="width:50px;height:50px;border-radius:6px;margin-right:10px;vertical-align:middle;"> ${compName}: <strong>${name}</strong>`;
-  winnerPopup.classList.add("show");
-  setTimeout(()=>{ winnerPopup.classList.remove("show"); },4000);
-}
-
-// UPDATE COUNTDOWN
-function updateCountdown() {
-  const now = new Date();
-  competitions.forEach((c,i)=>{
-    const timeLeft = Math.max(0,c.endTime-now);
-    const hours = Math.floor(timeLeft/3600000);
-    const minutes = Math.floor((timeLeft%3600000)/60000);
-    const seconds = Math.floor((timeLeft%60000)/1000);
-    const hEl = document.getElementById("h"+i);
-    const mEl = document.getElementById("m"+i);
-    const sEl = document.getElementById("s"+i);
-    if(hEl) flipUpdate(hEl,hours+'h');
-    if(mEl) flipUpdate(mEl,minutes+'m');
-    if(sEl) flipUpdate(sEl,seconds+'s');
-  });
-}
-
-// LIVE REFRESH
-setInterval(render,1000);
-setInterval(updateCountdown,1000);
 render();
 </script>
+
 </body>
 </html>
