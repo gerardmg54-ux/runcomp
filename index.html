@@ -60,7 +60,8 @@
         <div id="adminStatus" class="muted small"></div>
       </div>
 
-      <div id="adminPanel" class="admin hidden">
+      <!-- EVERYTHING BELOW SHOULD ONLY SHOW AFTER ADMIN LOGIN -->
+      <div id="adminPanel" class="admin admin-only hidden">
         <div class="admin__cols">
           <div class="admin__box">
             <h3>Add / Edit Competition</h3>
@@ -134,11 +135,8 @@ Mystery Prize"></textarea>
           </div>
         </div>
 
-        <div class="admin__box">
-<section id="winnersSection" class="admin-only">
-  <h2>Winners</h2>
-  <ul id="winners-list"></ul>
-</section>
+        <!-- WINNERS = ADMIN ONLY -->
+        <div class="admin__box admin-only">
           <h3>Winners</h3>
           <div class="row row--tight">
             <button id="exportWinnersBtn" class="btn btn--ghost">Export winners (CSV)</button>
