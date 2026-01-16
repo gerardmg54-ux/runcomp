@@ -5,187 +5,279 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RunComp Ultimate</title>
 <style>
-body { font-family: Arial, sans-serif; background:#f5f5f5; margin:0; padding:0; }
-header { background:#222; color:#fff; padding:15px; text-align:center; }
-header h1 { margin:0; }
-.container { max-width:700px; margin:20px auto; padding:20px; background:#fff; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
-input, button { width:100%; padding:10px; margin:5px 0; border-radius:4px; border:1px solid #ccc; box-sizing:border-box; }
-button { background:#ff5b5b; color:#fff; border:none; font-weight:bold; cursor:pointer; }
-button:hover { opacity:0.9; }
-.competition { border-bottom:1px solid #ddd; padding:10px 0; display:flex; align-items:center; justify-content:space-between; }
-.competition img { max-width:80px; border-radius:4px; margin-right:10px; }
-.admin { display:none; margin-top:20px; }
-.actions button { width:auto; margin-left:5px; padding:5px 10px; }
-.winner { color:green; font-weight:bold; }
+/* ----- Styles ----- */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f4f4f4;
+  color: #333;
+}
+
+header {
+  background: #333;
+  color: #fff;
+  text-align: center;
+  padding: 1em 0;
+}
+
+header h1 {
+  margin: 0.2em 0;
+}
+
+section {
+  margin: 20px;
+  padding: 15px;
+  background: #fff;
+  border-radius: 10px;
+}
+
+input, select, button {
+  padding: 0.7em;
+  margin: 0.3em 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+button {
+  background: #ff6b6b;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background: #ff4b4b;
+}
+
+#competitions-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1em;
+}
+
+.competition {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 1em;
+  width: 220px;
+  text-align: center;
+  background: #fff;
+}
+
+.competition img {
+  max-width: 100%;
+  border-radius: 5px;
+}
+
+#admin-panel {
+  margin-top: 20px;
+  border-top: 2px solid #333;
+  padding-top: 15px;
+}
+
+#winners-section ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+footer {
+  text-align: center;
+  margin: 20px 0;
+  font-size: 0.9em;
+}
 </style>
 </head>
 <body>
 
 <header>
-<h1>💷 RunComp Ultimate</h1>
-<p>Competitions with live draws & ticket system</p>
+  <h1>💷 RunComp Ultimate</h1>
+  <p>Competitions with automated ticket system & winners!</p>
 </header>
 
-<div class="container">
+<!-- User Section -->
+<section id="user-section">
+  <label for="username">Your Name</label>
+  <input type="text" id="username" placeholder="Enter your name">
+  <button onclick="confirmName()">Confirm Name</button>
+</section>
 
-<h2>Your Name</h2>
-<input id="userName" placeholder="Enter your name">
-<button onclick="confirmName()">Confirm Name</button>
+<!-- Live Competitions -->
+<section id="competitions-section">
+  <h2>Live Competitions</h2>
+  <div id="competitions-list"></div>
+</section>
 
-<h2>Live Competitions</h2>
-<div id="liveComps"></div>
+<!-- Admin Panel -->
+<section id="admin-panel">
+  <h2>Admin Panel</h2>
+  <input type="text" id="comp-name" placeholder="Competition name">
+  <input type="number" id="comp-price" placeholder="Ticket price (£)">
+  <input type="text" id="comp-image" placeholder="Image filename">
+  <select id="comp-category">
+    <option value="Cash">Cash</option>
+    <option value="Travel">Travel</option>
+    <option value="Other">Other</option>
+  </select>
+  <button onclick="addCompetition()">Add Competition</button>
+</section>
 
-<h2>Admin Panel</h2>
-<button onclick="adminLogin()">Admin Login</button>
-<div class="admin" id="adminPanel">
-<hr>
-<h3>Add / Edit Competition</h3>
-<input id="compName" placeholder="Competition name">
-<input id="compPrice" placeholder="Ticket price (£)">
-<input id="compImage" placeholder="Image URL">
-<input id="compDate" type="datetime-local">
-<button onclick="addCompetition()">Add Competition</button>
-<div id="adminList"></div>
-</div>
+<!-- Winners Section -->
+<section id="winners-section">
+  <h2>Winners</h2>
+  <ul id="winners-list"></ul>
+</section>
 
-<h2>Winners</h2>
-<div id="winnersList">No winners yet.</div>
-
-</div>
+<footer>
+  <p>&copy; 2026 RunComp Ultimate</p>
+</footer>
 
 <script>
-// Preloaded competitions
-let competitions = [
-  { name: "£500 Cash Giveaway", price: "1", image: "file_00000000e30720a9d6a570db1169654.png", date: "2026-01-20T20:00", participants: [] },
-  { name: "£300 Cash Giveaway", price: "0.5", image: "file_00000000e91871f48edb24f44189fd18.png", date: "2026-01-22T20:00", participants: [] },
-  { name: "2 Night City Break for 2", price: "3", image: "file_00000000c0f4720a8f179241aaa384e0.png", date: "2026-01-25T20:00", participants: [] }
-];
+// ----- Script.js integrated -----
+let competitions = [];
 let winners = [];
-let currentUser = "";
+let username = "";
 
-// LocalStorage load
-if(localStorage.getItem("competitions")) competitions = JSON.parse(localStorage.getItem("competitions"));
-if(localStorage.getItem("winners")) winners = JSON.parse(localStorage.getItem("winners"));
+// Load data from localStorage
+function loadData() {
+  const savedCompetitions = localStorage.getItem("competitions");
+  const savedWinners = localStorage.getItem("winners");
 
-// Render competitions for users
-function renderCompetitions() {
-  const live = document.getElementById("liveComps");
-  live.innerHTML = "";
-  competitions.forEach((c,i)=>{
-    const div = document.createElement("div");
-    div.className = "competition";
-    div.innerHTML = `
-      <img src="${c.image}" alt="${c.name}">
-      <div>
-        <strong>${c.name}</strong><br>
-        £${c.price} per ticket<br>
-        Draw: ${new Date(c.date).toLocaleString()}<br>
-        <button onclick="buyTicket(${i})">Buy Ticket</button>
-      </div>
-    `;
-    live.appendChild(div);
-  });
-  renderAdmin();
-  renderWinners();
+  if(savedCompetitions) competitions = JSON.parse(savedCompetitions);
+  if(savedWinners) winners = JSON.parse(savedWinners);
+
+  displayCompetitions();
+  showWinners();
 }
 
-// User name
-function confirmName(){
-  const name = document.getElementById("userName").value.trim();
-  if(name==""){ alert("Enter your name"); return; }
-  currentUser = name;
-  alert(`Hello ${currentUser}, you can now buy tickets!`);
-}
-
-// Buy ticket via PayPal
-function buyTicket(i){
-  if(!currentUser) { alert("Enter your name first"); return; }
-  const c = competitions[i];
-  // Record participant immediately (for demonstration)
-  c.participants.push(currentUser);
+// Save data to localStorage
+function saveData() {
   localStorage.setItem("competitions", JSON.stringify(competitions));
-  alert(`Ticket purchased for ${c.name} by ${currentUser}`);
-  // Redirect to PayPal
-  const link = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=YOUR_PAYPAL_EMAIL&item_name=${encodeURIComponent(c.name)}&amount=${c.price}&currency_code=GBP`;
-  window.open(link,"_blank");
+  localStorage.setItem("winners", JSON.stringify(winners));
 }
 
-// Render admin panel
-function adminLogin(){
-  const pw = prompt("Enter admin password:");
-  if(pw==="admin123"){ document.getElementById("adminPanel").style.display="block"; } 
-  else { alert("Wrong password"); }
-}
-
-function renderAdmin(){
-  const admin = document.getElementById("adminList");
-  admin.innerHTML = "";
-  competitions.forEach((c,i)=>{
-    const div = document.createElement("div");
-    div.className="competition";
-    div.innerHTML = `
-      ${c.name} (£${c.price}) 
-      <div class="actions">
-        <button onclick="editCompetition(${i})">Edit</button>
-        <button onclick="deleteCompetition(${i})">Delete</button>
-        <button onclick="pickWinner(${i})">Pick Winner</button>
-      </div>
-    `;
-    admin.appendChild(div);
-  });
-}
-
-// Admin functions
-function addCompetition(){
-  const name = compName.value.trim();
-  const price = compPrice.value.trim();
-  const image = compImage.value.trim();
-  const date = compDate.value.trim();
-  if(!name||!price||!image||!date){ alert("Fill all fields"); return; }
-  competitions.push({name, price, image, date, participants: []});
-  compName.value = compPrice.value = compImage.value = compDate.value = '';
-  localStorage.setItem("competitions", JSON.stringify(competitions));
-  renderCompetitions();
-}
-
-function editCompetition(i){
-  const c = competitions[i];
-  const name = prompt("Edit name", c.name);
-  const price = prompt("Edit price", c.price);
-  const image = prompt("Edit image URL", c.image);
-  const date = prompt("Edit draw date", c.date);
-  if(!name||!price||!image||!date) return;
-  competitions[i] = {name, price, image, date, participants:c.participants};
-  localStorage.setItem("competitions", JSON.stringify(competitions));
-  renderCompetitions();
-}
-
-function deleteCompetition(i){
-  if(confirm("Delete this competition?")){
-    competitions.splice(i,1);
-    localStorage.setItem("competitions", JSON.stringify(competitions));
-    renderCompetitions();
+// Confirm user name
+function confirmName() {
+  const input = document.getElementById('username');
+  username = input.value.trim();
+  if(username) {
+    alert(`Welcome, ${username}!`);
+    input.value = '';
+  } else {
+    alert("Please enter your name.");
   }
 }
 
-function pickWinner(i){
-  const c = competitions[i];
-  if(c.participants.length===0){ alert("No participants yet"); return; }
-  const winner = c.participants[Math.floor(Math.random()*c.participants.length)];
-  winners.push({competition:c.name, winner: winner});
-  localStorage.setItem("winners", JSON.stringify(winners));
-  alert(`Winner of ${c.name}: ${winner}`);
-  renderWinners();
+// Add competition
+function addCompetition() {
+  const name = document.getElementById('comp-name').value.trim();
+  const price = parseFloat(document.getElementById('comp-price').value);
+  const image = document.getElementById('comp-image').value.trim();
+  const category = document.getElementById('comp-category').value;
+
+  if(!name || !price || !image) {
+    alert("Fill all competition fields!");
+    return;
+  }
+
+  const comp = { 
+    name, 
+    price, 
+    image, 
+    category, 
+    tickets: [], 
+    totalMoney: 0 
+  };
+  competitions.push(comp);
+  saveData();
+  displayCompetitions();
+  alert("Competition added!");
 }
 
-// Render winners
-function renderWinners(){
-  const div = document.getElementById("winnersList");
-  if(winners.length===0){ div.innerHTML="No winners yet."; return; }
-  div.innerHTML = winners.map(w=>`<p class="winner">${w.competition}: ${w.winner}</p>`).join("");
+// Display competitions
+function displayCompetitions() {
+  const list = document.getElementById('competitions-list');
+  list.innerHTML = "";
+  competitions.forEach((comp, index) => {
+    const div = document.createElement('div');
+    div.className = 'competition';
+    div.innerHTML = `
+      <h3>${comp.name}</h3>
+      <img src="${comp.image}" alt="${comp.name}">
+      <p>Ticket: £${comp.price}</p>
+      <p>Category: ${comp.category}</p>
+      <p>Collected: £${comp.totalMoney.toFixed(2)}</p>
+      <button onclick="buyTicket(${index})">Buy Ticket</button>
+    `;
+    list.appendChild(div);
+  });
 }
 
-renderCompetitions();
+// Buy ticket
+function buyTicket(index) {
+  if(!username) { alert("Enter your name first!"); return; }
+
+  const comp = competitions[index];
+  comp.tickets.push(username);
+  comp.totalMoney += comp.price;
+
+  // Auto winner if totalMoney >= 500
+  if(comp.totalMoney >= 500) {
+    pickWinnerForCompetition(index);
+  }
+
+  saveData();
+  displayCompetitions();
+}
+
+// Pick winner for specific competition
+function pickWinnerForCompetition(index) {
+  const comp = competitions[index];
+  if(comp.tickets.length === 0) return;
+
+  const winnerIndex = Math.floor(Math.random() * comp.tickets.length);
+  const winnerName = comp.tickets[winnerIndex];
+
+  winners.push({competition: comp.name, winner: winnerName});
+  alert(`${winnerName} just won ${comp.name}!`);
+
+  showWinners();
+
+  // Reset competition after winner
+  comp.tickets = [];
+  comp.totalMoney = 0;
+
+  saveData();
+  displayCompetitions();
+}
+
+// Show winners
+function showWinners() {
+  const list = document.getElementById('winners-list');
+  list.innerHTML = "";
+  winners.forEach(w => {
+    const li = document.createElement('li');
+    li.textContent = `${w.winner} won ${w.competition}`;
+    list.appendChild(li);
+  });
+}
+
+// Preload example competitions if none saved
+if(!localStorage.getItem("competitions")) {
+  competitions.push(
+    {name: "£500 Cash", price: 1, image: "500cash.png", category:"Cash", tickets: [], totalMoney: 0},
+    {name: "£300 Cash", price: 0.5, image: "300cash.png", category:"Cash", tickets: [], totalMoney: 0},
+    {name: "City Break", price: 3, image: "citybreak.png", category:"Travel", tickets: [], totalMoney: 0}
+  );
+  saveData();
+}
+
+loadData();
 </script>
+
 </body>
 </html>
