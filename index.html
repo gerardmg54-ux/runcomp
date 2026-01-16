@@ -1,11 +1,56 @@
+index.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RunComp Ultimate</title>
-<style>
-/* ----- Styles ----- */
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>💷 RunComp Ultimate</h1>
+  <p>Competitions with automated ticket system & winners!</p>
+</header>
+
+<section id="user-section">
+  <label for="username">Your Name</label>
+  <input type="text" id="username" placeholder="Enter your name">
+  <button onclick="confirmName()">Confirm Name</button>
+</section>
+
+<section id="competitions-section">
+  <h2>Live Competitions</h2>
+  <div id="competitions-list"></div>
+</section>
+
+<section id="admin-panel">
+  <h2>Admin Panel</h2>
+  <input type="text" id="comp-name" placeholder="Competition name">
+  <input type="number" id="comp-price" placeholder="Ticket price (£)">
+  <input type="text" id="comp-image" placeholder="Image filename">
+  <select id="comp-category">
+    <option value="Cash">Cash</option>
+    <option value="Travel">Travel</option>
+    <option value="Other">Other</option>
+  </select>
+  <button onclick="addCompetition()">Add Competition</button>
+</section>
+
+<section id="winners-section">
+  <h2>Winners</h2>
+  <ul id="winners-list"></ul>
+</section>
+
+<footer>
+  <p>&copy; 2026 RunComp Ultimate</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
+style.css
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -74,12 +119,6 @@ button:hover {
   border-radius: 5px;
 }
 
-#admin-panel {
-  margin-top: 20px;
-  border-top: 2px solid #333;
-  padding-top: 15px;
-}
-
 #winners-section ul {
   list-style-type: none;
   padding: 0;
@@ -90,54 +129,7 @@ footer {
   margin: 20px 0;
   font-size: 0.9em;
 }
-</style>
-</head>
-<body>
-
-<header>
-  <h1>💷 RunComp Ultimate</h1>
-  <p>Competitions with automated ticket system & winners!</p>
-</header>
-
-<!-- User Section -->
-<section id="user-section">
-  <label for="username">Your Name</label>
-  <input type="text" id="username" placeholder="Enter your name">
-  <button onclick="confirmName()">Confirm Name</button>
-</section>
-
-<!-- Live Competitions -->
-<section id="competitions-section">
-  <h2>Live Competitions</h2>
-  <div id="competitions-list"></div>
-</section>
-
-<!-- Admin Panel -->
-<section id="admin-panel">
-  <h2>Admin Panel</h2>
-  <input type="text" id="comp-name" placeholder="Competition name">
-  <input type="number" id="comp-price" placeholder="Ticket price (£)">
-  <input type="text" id="comp-image" placeholder="Image filename">
-  <select id="comp-category">
-    <option value="Cash">Cash</option>
-    <option value="Travel">Travel</option>
-    <option value="Other">Other</option>
-  </select>
-  <button onclick="addCompetition()">Add Competition</button>
-</section>
-
-<!-- Winners Section -->
-<section id="winners-section">
-  <h2>Winners</h2>
-  <ul id="winners-list"></ul>
-</section>
-
-<footer>
-  <p>&copy; 2026 RunComp Ultimate</p>
-</footer>
-
-<script>
-// ----- Script.js integrated -----
+script.js
 let competitions = [];
 let winners = [];
 let username = "";
@@ -234,7 +226,7 @@ function buyTicket(index) {
   displayCompetitions();
 }
 
-// Pick winner for specific competition
+// Pick winner
 function pickWinnerForCompetition(index) {
   const comp = competitions[index];
   if(comp.tickets.length === 0) return;
@@ -247,7 +239,7 @@ function pickWinnerForCompetition(index) {
 
   showWinners();
 
-  // Reset competition after winner
+  // Reset competition
   comp.tickets = [];
   comp.totalMoney = 0;
 
@@ -277,7 +269,3 @@ if(!localStorage.getItem("competitions")) {
 }
 
 loadData();
-</script>
-
-</body>
-</html>
