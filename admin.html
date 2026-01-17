@@ -4,21 +4,79 @@
   <meta charset="utf-8">
   <meta name="robots" content="noindex,nofollow">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>404 Not Found</title>
-  <style>
-    body{margin:0;display:grid;place-items:center;height:100vh;
-    background:#0b1220;color:#e5e7eb;font-family:system-ui}
-    .box{padding:30px;border:1px solid #334155;border-radius:16px}
-    h1{font-size:48px;margin:0}
-    p{opacity:.7}
-    a{color:#22c55e;text-decoration:none}
-  </style>
+  <title>RunComp Admin</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <div class="box">
-    <h1>404</h1>
-    <p>File not found.</p>
-    <p><a href="./">Go home</a></p>
+
+<body data-page="admin">
+<header class="header">
+  <div class="wrap header__inner">
+    <div class="brand">
+      <div class="brand__logo">🔒</div>
+      <div>
+        <div class="brand__name">RunComp Admin</div>
+        <div class="brand__tag">Manage competitions & winners</div>
+      </div>
+    </div>
+    <div class="muted small">
+      <a href="./">Open public site</a>
+    </div>
   </div>
+</header>
+
+<main class="wrap main">
+<section class="card">
+  <h3>Admin Login</h3>
+  <div class="row">
+    <input id="adminPass" class="input" type="password" placeholder="Admin password">
+    <button id="adminLoginBtn" class="btn btn--primary">Login</button>
+    <button id="adminLogoutBtn" class="btn btn--ghost hidden">Logout</button>
+  </div>
+  <div id="adminStatus" class="muted small"></div>
+</section>
+
+<section id="adminPanel" class="card hidden">
+  <h3>Add / Edit Competition</h3>
+
+  <input id="a_id" class="input hidden">
+
+  <label class="label">Name</label>
+  <input id="a_name" class="input">
+
+  <div class="row">
+    <input id="a_price" class="input" type="number" placeholder="Ticket price (£)">
+    <input id="a_limit" class="input" type="number" placeholder="Ticket limit">
+  </div>
+
+  <label class="label">Image filename</label>
+  <input id="a_image" class="input">
+
+  <label class="label">PayPal link</label>
+  <input id="a_paypal" class="input">
+
+  <label class="label">Winner trigger (£)</label>
+  <input id="a_threshold" class="input">
+
+  <label class="label">Instant wins (one per line)</label>
+  <textarea id="a_instant" class="textarea"></textarea>
+
+  <div class="row">
+    <button id="saveCompBtn" class="btn btn--primary">Save</button>
+    <button id="clearFormBtn" class="btn btn--ghost">Clear</button>
+  </div>
+</section>
+
+<section id="adminPanel2" class="card hidden">
+  <h3>Manage Competitions</h3>
+  <div id="adminList"></div>
+
+  <h3>Winners</h3>
+  <button id="exportWinnersBtn" class="btn btn--ghost">Export CSV</button>
+  <button id="clearWinnersBtn" class="btn btn--danger">Clear</button>
+  <div id="winnersList"></div>
+</section>
+</main>
+
+<script src="script.js"></script>
 </body>
 </html>
