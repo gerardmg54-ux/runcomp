@@ -3,55 +3,140 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>RunComp Ultimate</title>
+  <title>RunComp Admin</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 
-<body data-page="public">
+<body data-page="admin">
   <header class="header">
     <div class="wrap header__inner">
       <div class="brand">
-        <div class="brand__logo">🏁</div>
+        <div class="brand__logo">🔒</div>
         <div>
-          <div class="brand__name">RunComp Ultimate</div>
-          <div class="brand__tag">Competitions with tickets & instant wins</div>
+          <div class="brand__name">RunComp Admin</div>
+          <div class="brand__tag">Add/edit competitions • winners • exports</div>
         </div>
       </div>
 
       <div class="userbox">
-        <label class="label" for="username">Your name</label>
-        <div class="row">
-          <input id="username" class="input" placeholder="Enter your name" />
-          <button id="confirmNameBtn" class="btn btn--primary">Confirm</button>
-        </div>
-        <div id="userStatus" class="muted small"></div>
+        <div class="muted small" id="adminGateStatus"></div>
+        <div class="muted small">Public site: <a href="./">Open homepage</a></div>
       </div>
     </div>
   </header>
 
   <main class="wrap main">
-    <section class="card">
+    <section class="card" id="adminGateCard">
       <div class="card__head">
-        <h2>Live Competitions</h2>
+        <h2>Admin Access</h2>
+      </div>
+
+      <div class="notice">
+        This admin page is hidden behind a secret URL key.
+      </div>
+
+      <div class="row row--tight" style="margin-top:10px">
+        <input id="adminPass" class="input" type="password" placeholder="Admin password" />
+        <button id="adminLoginBtn" class="btn btn--primary">Login</button>
+        <button id="adminLogoutBtn" class="btn btn--ghost hidden">Logout</button>
+      </div>
+      <div id="adminStatus" class="muted small"></div>
+    </section>
+
+    <section class="card hidden" id="adminApp">
+      <div class="card__head">
+        <h2>Admin Panel</h2>
         <div class="row row--tight">
-          <input id="searchBox" class="input" placeholder="Search competitions…" />
-          <select id="categoryFilter" class="select">
-            <option value="all">All categories</option>
-          </select>
           <button id="resetDataBtn" class="btn btn--ghost" title="Clears only your browser data">Reset (local)</button>
         </div>
       </div>
 
-      <div id="compGrid" class="grid"></div>
+      <div class="admin">
+        <div class="admin__cols">
+          <div class="admin__box">
+            <h3>Add / Edit Competition</h3>
 
-      <div class="notice">
-        <b>Public view:</b> ticket totals, money collected & winners are hidden.
+            <input id="a_id" class="input hidden" />
+
+            <label class="label">Name</label>
+            <input id="a_name" class="input" placeholder="e.g. £500 Cash Giveaway" />
+
+            <div class="row">
+              <div class="col">
+                <label class="label">Ticket price (£)</label>
+                <input id="a_price" class="input" type="number" step="0.01" min="0" placeholder="1.00" />
+              </div>
+              <div class="col">
+                <label class="label">Category</label>
+                <select id="a_category" class="select">
+                  <option value="Cash">Cash</option>
+                  <option value="Travel">Travel</option>
+                  <option value="Prizes">Prizes</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <label class="label">Image filename (in repo)</label>
+                <input id="a_image" class="input" placeholder="500cash.png" />
+                <div class="muted small">Example: <b>500cash.png</b>, <b>300cash.png</b>, <b>citybreak.png</b></div>
+              </div>
+              <div class="col">
+                <label class="label">PayPal payment URL</label>
+                <input id="a_paypal" class="input" placeholder="https://www.paypal.com/ncp/payment/..." />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <label class="label">Ticket limit</label>
+                <input id="a_limit" class="input" type="number" step="1" min="1" placeholder="e.g. 2000" />
+              </div>
+              <div class="col">
+                <label class="label">Winner trigger (£)</label>
+                <input id="a_threshold" class="input" type="number" step="0.01" min="1" placeholder="1000" />
+              </div>
+            </div>
+
+            <label class="label">Ends at (optional)</label>
+            <input id="a_ends" class="input" type="datetime-local" />
+
+            <details class="details">
+              <summary><b>Instant Wins</b> (optional) — prizes released randomly as tickets are bought</summary>
+              <div class="muted small">One per line. Example: “Free Ticket”, “£10”, “AirPods”.</div>
+              <textarea id="a_instant" class="textarea" rows="4" placeholder="Free Ticket
+£10 Cash
+Mystery Prize"></textarea>
+            </details>
+
+            <div class="row">
+              <button id="saveCompBtn" class="btn btn--primary">Save Competition</button>
+              <button id="clearFormBtn" class="btn btn--ghost">Clear</button>
+            </div>
+          </div>
+
+          <div class="admin__box">
+            <h3>Manage Competitions</h3>
+            <div id="adminList" class="adminlist"></div>
+          </div>
+        </div>
+
+        <div class="admin__box" style="margin-top:12px">
+          <h3>Winners (Admin Only)</h3>
+          <div class="row row--tight">
+            <button id="exportWinnersBtn" class="btn btn--ghost">Export winners (CSV)</button>
+            <button id="clearWinnersBtn" class="btn btn--danger">Clear winners</button>
+          </div>
+          <div id="winnersList" class="winners"></div>
+        </div>
       </div>
     </section>
 
     <footer class="footer">
       <div class="muted small">
-        © <span id="year"></span> RunComp Ultimate
+        © <span id="year"></span> RunComp Ultimate • Admin
       </div>
     </footer>
   </main>
