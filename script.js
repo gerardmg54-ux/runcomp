@@ -13,7 +13,7 @@ const LS_KEY = "runcomp_data_v4";
 const LS_ADMIN = "runcomp_admin_ok";
 
 // ✅ CHANGE THESE:
-const ADMIN_PASSWORD_DEFAULT = "admin123";       // <- change this
+const ADMIN_PASSWORD_DEFAULT = "RunComp#8291!Gerard";       // <- change this
 const ADMIN_URL_KEY = "CHANGE_THIS_KEY";         // <- change this (secret URL key)
 
 const DEFAULT_THRESHOLD = 1000;
