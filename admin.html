@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>RunComp Ultimate</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body data-page="public">
+  <header class="header">
+    <div class="wrap header__inner">
+      <div class="brand">
+        <div class="brand__logo">🏁</div>
+        <div>
+          <div class="brand__name">RunComp Ultimate</div>
+          <div class="brand__tag">Competitions with tickets & instant wins</div>
+        </div>
+      </div>
+
+      <div class="userbox">
+        <label class="label" for="username">Your name</label>
+        <div class="row">
+          <input id="username" class="input" placeholder="Enter your name" />
+          <button id="confirmNameBtn" class="btn btn--primary">Confirm</button>
+        </div>
+        <div id="userStatus" class="muted small"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap main">
+    <section class="card">
+      <div class="card__head">
+        <h2>Live Competitions</h2>
+        <div class="row row--tight">
+          <input id="searchBox" class="input" placeholder="Search competitions…" />
+          <select id="categoryFilter" class="select">
+            <option value="all">All categories</option>
+          </select>
+          <button id="resetDataBtn" class="btn btn--ghost" title="Clears only your browser data">Reset (local)</button>
+        </div>
+      </div>
+
+      <div id="compGrid" class="grid"></div>
+
+      <div class="notice">
+        <b>Public view:</b> ticket totals, money collected & winners are hidden.
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="muted small">
+        © <span id="year"></span> RunComp Ultimate
+      </div>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
